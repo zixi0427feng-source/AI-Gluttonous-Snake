@@ -168,13 +168,25 @@ def game_loop():
                 if segment == snake_head:
                     game_close = True
 
+            # 吃到食物后刷新
             if x == foodx and y == foody:
-                foodx = round(random.randrange(BLOCK_SIZE, WIDTH - 2 * BLOCK_SIZE) / 20.0) * 20.0
-                foody = round(random.randrange(BLOCK_SIZE, HEIGHT - 2 * BLOCK_SIZE) / 20.0) * 20.0
                 snake_length += 1
+                # 获取所有可用的空地坐标
+                all_empty_slots = []
+                for tx in range(BLOCK_SIZE, WIDTH - BLOCK_SIZE, BLOCK_SIZE):
+                    for ty in range(BLOCK_SIZE, HEIGHT - BLOCK_SIZE, BLOCK_SIZE):
+                        if [tx, ty] not in snake_list:
+                            all_empty_slots.append((tx, ty))
+    
+    # 如果还有空位，随机挑一个；如果没有空位，说明你通关了！
+                if all_empty_slots:
+                    foodx, foody = random.choice(all_empty_slots)
+                else:
+                    print("恭喜！你填满了整个屏幕！")
+                    game_close = True 
 
-        screen.fill(BLACK)
-
+                    screen.fill(BLACK)
+    
         draw_walls()
 
         # 画食物
